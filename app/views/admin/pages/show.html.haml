@@ -1,0 +1,84 @@
+.row
+  .col-md-8
+    %h1=@page.title
+  .col-md-4
+
+    .panel.panel-default
+      .panel-heading.clearfix{style: 'border-bottom: 0 none;'}
+        = link_to "Open Page", app_slug_path(@page.slug), class: 'btn btn-default pull-left', target: '_blank'
+        = link_to "Publish", publish_admin_page_path(@page), method: 'patch', class: 'btn btn-primary pull-right' if !@page.is_published?
+
+        = link_to "Unpublish", unpublish_admin_page_path(@page), method: 'patch', class: 'btn btn-danger pull-right' if @page.is_published?
+
+.row
+  .col-md-8
+    = form_for :component, url: admin_page_components_path(@page) do |f|
+      .panel.panel-default
+        .panel-heading
+          %h4 Add components
+        .panel-body
+          .form-group
+            = f.label :title
+            = f.text_field :title, class: 'form-control'
+
+          .form-group
+            = f.label :type
+            = f.select :type, [['Calendar', 'calendar'], ['Body text', 'body'], ['Header', 'header'], ['Embedded Video', 'video']], include_blank: true
+
+          .form-group
+            = f.label :calendar
+            = f.collection_select :calendar_id, Calendar.all,:id,:title, include_blank: true
+
+          .form-group
+            = f.label :body
+            = f.text_area :body, class: 'form-control'
+
+          .form-group
+            = f.label :embed_url
+            = f.text_field :embed_url, class: 'form-control'
+
+        .panel-footer.clearfix
+          = f.submit 'Add', class: 'btn btn-primary pull-left'
+
+    - if !@page.components.empty?
+      - @page.components.each do |component|
+        .panel.panel-default
+          .panel-heading.clearfix
+            .pull-right
+              - if !component.last?
+                = link_to sort_lower_admin_page_component_path(@page, component), method: 'patch', class: 'btn btn-default' do
+                  %i.fa.fa-arrow-down
+              - else
+                = link_to sort_lower_admin_page_component_path(@page, component), method: 'patch', class: 'btn btn-default disabled' do
+                  %i.fa.fa-arrow-down
+
+              - if !component.first?
+                = link_to sort_higher_admin_page_component_path(@page, component), method: 'patch', class: 'btn btn-default' do
+                  %i.fa.fa-arrow-up
+              - else
+                = link_to sort_higher_admin_page_component_path(@page, component), method: 'patch', class: 'btn btn-default disabled' do
+                  %i.fa.fa-arrow-up
+
+            %h4.pull-left= component.title
+          .panel-body
+            / = link_to 'Edit', admin_page_component_path(@page, component), class: 'btn btn-primary'
+            = link_to 'Delete', admin_page_component_path(@page, component), method: 'delete', class: 'btn btn-danger'
+
+  .col-md-4
+
+    = form_for :page, method: 'patch', url: admin_page_path(@page) do |f|
+      .panel.panel-default
+        .panel-heading
+          %h4 Edit Page
+        .panel-body
+          .form-group
+            = f.label :title
+            = f.text_field :title, class: 'form-control'
+
+          .form-group
+            = f.label :slug
+            = f.text_field :slug, class: 'form-control'
+            %p.help-block The slug is the URL
+        .panel-footer.clearfix
+          = f.submit 'Update', class: 'btn btn-primary pull-left'
+          = link_to "Delete Page", admin_page_path(@page), method: 'delete', class: 'btn btn-danger pull-right'

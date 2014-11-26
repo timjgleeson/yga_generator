@@ -1,0 +1,50 @@
+.row
+  .col-md-8
+    - if @pages.empty?
+      %p No pages are found.
+    - else
+      - @pages.each do |page|
+        .panel.panel-default
+          .panel-heading.clearfix
+            .pull-right
+              - if !page.last?
+                = link_to sort_lower_admin_page_path(page), method: 'patch', class: 'btn btn-default' do
+                  %i.fa.fa-arrow-down
+              - else
+                = link_to sort_lower_admin_page_path(page), method: 'patch', class: 'btn btn-default disabled' do
+                  %i.fa.fa-arrow-down
+
+              - if !page.first?
+                = link_to sort_higher_admin_page_path(page), method: 'patch', class: 'btn btn-default' do
+                  %i.fa.fa-arrow-up
+              - else
+                = link_to sort_higher_admin_page_path(page), method: 'patch', class: 'btn btn-default disabled' do
+                  %i.fa.fa-arrow-up
+
+            %h4.pull-left= page.title
+          .panel-body
+            = link_to 'Edit', admin_page_path(page), class: 'btn btn-primary'
+            = link_to 'Delete', admin_page_path(page), method: 'delete', class: 'btn btn-danger'
+
+            = link_to "Open Page", app_slug_path(page.slug), class: 'btn btn-default', target: '_blank'
+            = link_to "Publish", publish_admin_page_path(page), method: 'patch', class: 'btn btn-primary' if !page.is_published?
+
+            = link_to "Unpublish", unpublish_admin_page_path(page), method: 'patch', class: 'btn btn-danger' if page.is_published?
+
+  .col-md-4
+
+    = form_for :page, url: admin_pages_path do |f|
+      .panel.panel-default
+        .panel-heading
+          %h4 New Page
+        .panel-body
+          .form-group
+            = f.label :title
+            = f.text_field :title, class: 'form-control'
+
+          .form-group
+            = f.label :slug
+            = f.text_field :slug, class: 'form-control'
+            %p.help-block The slug is the URL
+        .panel-footer
+          = f.submit 'Create', class: 'btn btn-primary'

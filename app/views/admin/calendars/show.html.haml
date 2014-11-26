@@ -1,0 +1,43 @@
+.row
+  .col-md-8
+    %h1= @calendar.title
+  .col-md-4
+
+
+.row
+  .col-md-8
+    = form_for :event, url: admin_calendar_events_path(@calendar) do |f|
+      .panel.panel-default
+        .panel-heading
+          %h4 New Event
+
+        .panel-body
+          = render partial: "admin/events/form", locals: {f: f}
+
+        .panel-footer
+          = f.submit 'Create', class: 'btn btn-primary'
+
+    - if !@calendar.events.empty?
+      %ul
+        - @events.each do |event|
+          %li
+            = link_to event.title, admin_calendar_event_path(@calendar, event)
+            = link_to_if !event.last?, "Down", sort_lower_admin_calendar_event_path(@calendar, event), method: 'patch', class: 'btn'
+            = link_to_if !event.first?, "Up", sort_higher_admin_calendar_event_path(@calendar, event), method: 'patch', class: 'btn'
+            = link_to "Delete", admin_calendar_event_path(@calendar, event), method: 'delete', class: 'btn btn-danger pull-right'
+
+
+  .col-md-4
+
+    = form_for :calendar, method: 'patch', url: admin_calendar_path(@calendar) do |f|
+      .panel.panel-default
+        .panel-heading
+          %h4 Edit Calendar
+        .panel-body
+          .form-group
+            = f.label :title
+            = f.text_field :title, class: 'form-control'
+
+        .panel-footer.clearfix
+          = f.submit 'Update', class: 'btn btn-primary pull-left'
+          = link_to "Delete", admin_calendar_path(@calendar), method: 'delete', class: 'btn btn-danger pull-right'

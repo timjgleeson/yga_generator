@@ -1,0 +1,31 @@
+.row
+  .col-md-8
+    %h1= @calendar.title
+  .col-md-4
+
+.row
+  .col-md-8
+    - if @calendar.events.empty?
+      %p No events in the calendar.
+    - else
+      %ul
+        - @calendar.events.each do |event|
+          %li
+            = link_to event.title, admin_calendar_event_path(@calendar, event)
+            = link_to_if !event.last?, "Down", sort_lower_admin_calendar_event_path(@calendar, event), method: 'patch', class: 'btn'
+            = link_to_if !event.first?, "Up", sort_higher_admin_calendar_event_path(@calendar, event), method: 'patch', class: 'btn'
+
+    = link_to "Back", admin_calendar_path(@calendar)
+
+  .col-md-4
+    = form_for :event, method: 'patch', url: admin_calendar_event_path(@calendar, @event) do |f|
+      .panel.panel-default
+        .panel-heading
+          %h4 Edit Event
+
+        .panel-body
+          = render partial: "admin/events/form", locals: {f: f}
+
+        .panel-footer.clearfix
+          = f.submit 'Update', class: 'btn btn-primary pull-left'
+          = link_to "Delete", admin_calendar_event_path(@calendar, @event), method: 'delete', class: 'btn btn-danger pull-right'

@@ -1,0 +1,14 @@
+.form-group
+  = f.label :title
+  = f.text_field :title, class: 'form-control'
+.form-group
+  = f.label :body
+  = f.text_area :body, class: 'form-control'
+
+.form-group
+  = f.label :date_start, 'Start Date and Time'
+  = f.datetime_select :date_start, class: 'form-control'
+
+.form-group
+  = f.label :date_end, 'End Time'
+  = f.time_select :date_end, class: 'form-control'

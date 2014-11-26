@@ -1,0 +1,32 @@
+- @components.each do |component|
+
+  - if component.type == 'header'
+    %h1=component.body
+
+  - if component.type == 'body'
+    :markdown
+      #{component.body}
+
+  - if component.type == 'video'
+    %iframe{:src=>component.embed_url, :width=>"500", :height=>"281", :frameborder=>"0"}
+
+  - if component.type == 'calendar'
+    - calendar = Calendar.find(component.calendar_id)
+    - events = calendar.events.order(:position)
+    - if !@event.nil?
+      %h2=@event.title
+
+      %p=@event.body
+
+      = link_to "Back", app_slug_path(@page.slug)
+
+    - else
+
+      %h2=calendar.title
+      %ul
+        - events.each do |event|
+          %li
+            = link_to event.title, app_slug_path(@page.slug, :event_id => event.id)
+
+
+= link_to "Back", app_path

@@ -1,0 +1,26 @@
+.row
+  .col-md-8
+    - if @calendars.empty?
+      %p No calendars are foudn.
+    - else
+      - @calendars.each do |calendar|
+        .panel.panel-default
+          .panel-heading.clearfix
+            %h4.pull-left= calendar.title
+          .panel-body
+            = link_to 'Edit', admin_calendar_path(calendar), class: 'btn btn-primary'
+            = link_to 'Delete', admin_calendar_path(calendar), method: 'delete', class: 'btn btn-danger'
+
+  .col-md-4
+
+    = form_for :calendar, url: admin_calendars_path do |f|
+      .panel.panel-default
+        .panel-heading
+          %h4 New Calendar
+        .panel-body
+          .form-group
+            = f.label :title
+            = f.text_field :title, class: 'form-control'
+
+        .panel-footer
+          = f.submit 'Create', class: 'btn btn-primary'
